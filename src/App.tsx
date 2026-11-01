@@ -22,7 +22,7 @@ export default function App() {
       .catch((cause) => {
         if (!active) return;
         if (cause instanceof ApiError && (cause.status === 401 || cause.status === 403)) setUser(null);
-        else setNotice('Не удалось проверить вход: сервер недоступен. Можно повторить проверку или войти заново.');
+        else setNotice('Не удалось проверить вход. Повторите попытку.');
       }).finally(() => { if (active) setBusy(''); });
     return () => { active = false; };
   }, [check]);
@@ -44,7 +44,7 @@ export default function App() {
     try { await logout(); setUser(null); setShowProfile(false); }
     catch (cause) {
       if (cause instanceof ApiError && (cause.status === 401 || cause.status === 403)) { setUser(null); setShowProfile(false); }
-      else setNotice('Не удалось выйти из аккаунта. Проверьте подключение и повторите выход.');
+      else setNotice('Не удалось выйти. Повторите попытку.');
     } finally { setBusy(''); }
   }
 
@@ -53,20 +53,18 @@ export default function App() {
     <header className="site-header">
       <div className="header-inner page-width">
         <button className="brand" type="button" onClick={openHome} aria-label="Thunder bend — главная">
-          <span className="brand-symbol" aria-hidden="true">ϟ</span><span>THUNDER<span className="brand-second">BEND</span></span>
+          Thunder bend
         </button>
         <nav className="main-nav" aria-label="Главное меню">
           <button className={!showProfile ? 'active' : ''} type="button" onClick={openHome}>Главная</button>
           {!showProfile && <a href="#about">О группе</a>}
-          {!showProfile && <a href="#community">Сообщество</a>}
         </nav>
         <div className="account-actions">
           {user ? <><button className="account-button" type="button" disabled={Boolean(busy)} onClick={openProfile}>
-            <span className="avatar-small" aria-hidden="true">{(user.profile.first_name || user.username).slice(0, 1).toUpperCase()}</span>
-            <span className="account-name">Мой профиль</span>
+            Профиль
           </button><button className="text-button logout-button" type="button" disabled={Boolean(busy)} onClick={() => void handleLogout()}>Выйти</button></>
             : <><button className="text-button login-link" type="button" disabled={Boolean(busy)} onClick={() => setAuthMode('login')}>Войти</button>
-              <button className="button button-small button-outline" type="button" disabled={Boolean(busy)} onClick={() => setAuthMode('register')}>Регистрация <span aria-hidden="true">↗</span></button></>}
+              <button className="button button-small button-outline" type="button" disabled={Boolean(busy)} onClick={() => setAuthMode('register')}>Регистрация</button></>}
         </div>
       </div>
     </header>
@@ -79,9 +77,7 @@ export default function App() {
       {showProfile && user ? <ProfilePage key={user.id} user={user} onSave={saveProfile} onExpired={onExpired} onHome={openHome} />
         : <HomePage signedIn={Boolean(user)} busy={Boolean(busy)} onJoin={() => setAuthMode('register')} onProfile={openProfile} />}
     </div>
-    <footer className="site-footer page-width"><span className="footer-name">THUNDER BEND<span className="accent">.</span></span>
-      <span>Учебный сайт · ДЗ8</span><span>СОЗДАЁМ СВОЙ ЗВУК / 2026</span>
-    </footer>
+    <footer className="site-footer page-width">© 2026 Thunder bend</footer>
     {authMode && <AuthDialog mode={authMode} onModeChange={setAuthMode} onClose={() => setAuthMode(null)} onLogin={onLogin} />}
   </>;
 }

@@ -60,28 +60,17 @@ export default function ProfilePage({ user, onSave, onExpired, onHome }: Props) 
   const profile = user.profile;
   return <main className="profile-page page-width">
     <button className="text-button back-link" type="button" onClick={onHome}>← На главную</button>
-    <p className="eyebrow">ТВОЁ МЕСТО В ГРУППЕ</p>
-    <h1>Личный профиль<span className="accent">.</span></h1>
-    <p className="section-description">Твой звук начинается с тебя.</p>
-    <div className="profile-layout">
-      <aside className="identity-card">
-        <div className="avatar" aria-hidden="true">{(profile.first_name || user.username).slice(0, 1).toUpperCase()}</div>
-        <h2>{profile.first_name || user.username}</h2>
-        <p className="username">@{user.username}</p>
-        <span className="role-badge">{profile.specialization_display}</span>
-        <div className="identity-divider" />
-        <span className="eyebrow">THUNDER BEND COMMUNITY</span>
-        <p className="identity-caption">Разные люди.<br />Общий ритм.</p>
-      </aside>
+    <h1>Профиль</h1>
+    <p className="username">Логин: {user.username}</p>
       <section className="profile-card" aria-labelledby="profile-info-title">
-        <div className="card-heading"><h2 id="profile-info-title">{editing ? 'Редактирование профиля' : 'О музыканте'}</h2>
-          {!editing && <button className="button button-outline" type="button" onClick={startEditing}>Редактировать ↗</button>}
+        <div className="card-heading"><h2 id="profile-info-title">{editing ? 'Редактирование профиля' : 'Данные профиля'}</h2>
+          {!editing && <button className="button button-outline" type="button" onClick={startEditing}>Редактировать</button>}
         </div>
         {editing ? <form onSubmit={handleSubmit} noValidate>
           <fieldset disabled={pending}>
             <label htmlFor="profile-name">Имя</label>
             <input id="profile-name" name="first_name" maxLength={100} autoComplete="given-name"
-              value={firstName} onChange={(event) => setFirstName(event.target.value)} placeholder="Как тебя зовут" />
+              value={firstName} onChange={(event) => setFirstName(event.target.value)} placeholder="Введите имя" />
             <label htmlFor="profile-specialization">Специализация</label>
             <select id="profile-specialization" value={specialization} disabled={optionsLoading || Boolean(optionsError)}
               onChange={(event) => setSpecialization(event.target.value)}>
@@ -94,7 +83,7 @@ export default function ProfilePage({ user, onSave, onExpired, onHome }: Props) 
             </div>}
             <label htmlFor="profile-bio">О себе</label>
             <textarea id="profile-bio" rows={5} value={bio} onChange={(event) => setBio(event.target.value)}
-              placeholder="Расскажи о своём опыте, любимом звуке и музыкальных планах" />
+              placeholder="Опыт и другая информация" />
             <label htmlFor="profile-fee">Гонорар, сом</label>
             <input id="profile-fee" type="number" inputMode="decimal" min="0" max="99999999.99" step="0.01"
               value={fee} onChange={(event) => setFee(event.target.value)} />
@@ -106,14 +95,13 @@ export default function ProfilePage({ user, onSave, onExpired, onHome }: Props) 
             </div>
           </fieldset>
         </form> : <dl className="profile-details">
-          <div><dt>Имя</dt><dd>{profile.first_name || 'Пока не указано'}</dd></div>
+          <div><dt>Имя</dt><dd>{profile.first_name || 'Не указано'}</dd></div>
           <div><dt>Специализация</dt><dd>{profile.specialization_display}</dd></div>
-          <div><dt>О себе</dt><dd className="bio-text">{profile.bio || 'Здесь будет твоя история. Добавь её в редактировании профиля.'}</dd></div>
+          <div><dt>О себе</dt><dd className="bio-text">{profile.bio || 'Не указано'}</dd></div>
           <div><dt>Гонорар</dt><dd className="fee-value">{Number(profile.fee).toLocaleString('ru-RU', { maximumFractionDigits: 2 })} <span>сом</span></dd></div>
         </dl>}
         {error && <p className="message error" role="alert">{error}</p>}
         {saved && <p className="message success" role="status">Профиль сохранён.</p>}
       </section>
-    </div>
   </main>;
 }

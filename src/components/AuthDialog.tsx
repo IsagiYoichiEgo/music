@@ -50,7 +50,7 @@ export default function AuthDialog({ mode, onModeChange, onClose, onLogin }: Pro
         await register(input);
         setPassword(''); setConfirmation('');
         onModeChange('login');
-        setNotice('Аккаунт создан. Войдите с вашим логином и паролем.');
+        setNotice('Аккаунт создан. Теперь войдите.');
       } else {
         await login(input);
         // Проверяем, что браузер сохранил cookie сессии.
@@ -73,38 +73,34 @@ export default function AuthDialog({ mode, onModeChange, onClose, onLogin }: Pro
     onCancel={(event) => { event.preventDefault(); if (!pending) onClose(); }}
     onClick={(event) => { if (event.target === event.currentTarget && !pending) onClose(); }}>
     <button className="dialog-close" type="button" aria-label="Закрыть" disabled={pending} onClick={onClose}>×</button>
-    <span className="mini-mark" aria-hidden="true">ϟ</span>
-    <p className="eyebrow">THUNDER BEND / СООБЩЕСТВО</p>
-    <h2 id="auth-title">{isRegister ? 'Найди свою волну.' : 'Снова на связи.'}</h2>
-    <p className="dialog-description">{isRegister ? 'Создай аккаунт и расскажи, чем звучишь ты.' : 'Войди, чтобы открыть свой профиль музыканта.'}</p>
+    <h2 id="auth-title">{isRegister ? 'Регистрация' : 'Вход'}</h2>
     <form onSubmit={handleSubmit} noValidate>
       <fieldset disabled={pending}>
         <label htmlFor="auth-username">Логин</label>
         <input id="auth-username" name="username" autoComplete="username" autoFocus required maxLength={150}
-          value={username} onChange={(event) => setUsername(event.target.value)} placeholder="Твой псевдоним" />
+          value={username} onChange={(event) => setUsername(event.target.value)} placeholder="Введите логин" />
         <label htmlFor="auth-password">Пароль</label>
         <div className="password-field">
           <input id="auth-password" name="password" type={showPassword ? 'text' : 'password'} required
             autoComplete={isRegister ? 'new-password' : 'current-password'} value={password}
-            onChange={(event) => setPassword(event.target.value)} placeholder={isRegister ? 'Не менее 6 символов' : 'Введи пароль'} />
+            onChange={(event) => setPassword(event.target.value)} placeholder={isRegister ? 'Не менее 6 символов' : 'Введите пароль'} />
           <button type="button" className="password-toggle" onClick={() => setShowPassword((value) => !value)}
             aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>{showPassword ? 'Скрыть' : 'Показать'}</button>
         </div>
         {isRegister && <><label htmlFor="auth-confirmation">Повтор пароля</label>
           <input id="auth-confirmation" name="confirmation" type="password" autoComplete="new-password" required
-            value={confirmation} onChange={(event) => setConfirmation(event.target.value)} placeholder="Ещё раз, для уверенности" />
+            value={confirmation} onChange={(event) => setConfirmation(event.target.value)} placeholder="Повторите пароль" />
         </>}
         <button className="button button-accent full-width" type="submit">
           {pending && <span className="spinner" aria-hidden="true" />}
           {pending ? (isRegister ? 'Создаём аккаунт…' : 'Входим…') : (isRegister ? 'Создать аккаунт' : 'Войти')}
-          {!pending && <span aria-hidden="true">↗</span>}
         </button>
       </fieldset>
       {pending && <p className="form-status" role="status">Подождите, идёт загрузка…</p>}
       {error && <p className="message error" role="alert">{error}</p>}
       {notice && <p className="message success" role="status">{notice}</p>}
     </form>
-    <p className="auth-switch">{isRegister ? 'Уже с нами?' : 'Пока нет аккаунта?'}{' '}
+    <p className="auth-switch">{isRegister ? 'Есть аккаунт?' : 'Нет аккаунта?'}{' '}
       <button type="button" disabled={pending} onClick={switchMode}>{isRegister ? 'Войти' : 'Зарегистрироваться'}</button>
     </p>
   </dialog>;
