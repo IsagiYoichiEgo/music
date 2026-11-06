@@ -60,8 +60,13 @@ export default function ProfilePage({ user, onSave, onExpired, onHome }: Props) 
   const profile = user.profile;
   return <main className="profile-page page-width">
     <button className="text-button back-link" type="button" onClick={onHome}>← На главную</button>
-    <h1>Профиль</h1>
-    <p className="username">Логин: {user.username}</p>
+    <div className="profile-layout">
+      <aside className="profile-intro">
+        <div className="profile-avatar" aria-hidden="true">{(user.profile.first_name || user.username).slice(0, 1).toLocaleUpperCase('ru-RU')}</div>
+        <h1>Профиль</h1>
+        <p className="username">@{user.username}</p>
+        <p className="profile-intro-copy">Ваше имя, специализация<br />и информация о себе.</p>
+      </aside>
       <section className="profile-card" aria-labelledby="profile-info-title">
         <div className="card-heading"><h2 id="profile-info-title">{editing ? 'Редактирование профиля' : 'Данные профиля'}</h2>
           {!editing && <button className="button button-outline" type="button" onClick={startEditing}>Редактировать</button>}
@@ -69,7 +74,7 @@ export default function ProfilePage({ user, onSave, onExpired, onHome }: Props) 
         {editing ? <form onSubmit={handleSubmit} noValidate>
           <fieldset disabled={pending}>
             <label htmlFor="profile-name">Имя</label>
-            <input id="profile-name" name="first_name" maxLength={100} autoComplete="given-name"
+            <input id="profile-name" name="first_name" maxLength={100} autoComplete="given-name" autoFocus
               value={firstName} onChange={(event) => setFirstName(event.target.value)} placeholder="Введите имя" />
             <label htmlFor="profile-specialization">Специализация</label>
             <select id="profile-specialization" value={specialization} disabled={optionsLoading || Boolean(optionsError)}
@@ -103,5 +108,6 @@ export default function ProfilePage({ user, onSave, onExpired, onHome }: Props) 
         {error && <p className="message error" role="alert">{error}</p>}
         {saved && <p className="message success" role="status">Профиль сохранён.</p>}
       </section>
+    </div>
   </main>;
 }

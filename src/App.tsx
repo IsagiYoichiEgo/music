@@ -53,11 +53,11 @@ export default function App() {
     <header className="site-header">
       <div className="header-inner page-width">
         <button className="brand" type="button" onClick={openHome} aria-label="Thunder bend — главная">
-          Thunder bend
+          <span className="brand-mark" aria-hidden="true">tb<span>.</span></span><span className="brand-name">Thunder<br />bend</span>
         </button>
         <nav className="main-nav" aria-label="Главное меню">
           <button className={!showProfile ? 'active' : ''} type="button" onClick={openHome}>Главная</button>
-          {!showProfile && <a href="#about">О группе</a>}
+          {!showProfile && <a href="#about">О проекте</a>}
         </nav>
         <div className="account-actions">
           {user ? <><button className="account-button" type="button" disabled={Boolean(busy)} onClick={openProfile}>
@@ -77,7 +77,7 @@ export default function App() {
       {showProfile && user ? <ProfilePage key={user.id} user={user} onSave={saveProfile} onExpired={onExpired} onHome={openHome} />
         : <HomePage signedIn={Boolean(user)} busy={Boolean(busy)} onJoin={() => setAuthMode('register')} onProfile={openProfile} />}
     </div>
-    <footer className="site-footer page-width">© 2026 Thunder bend</footer>
+    <footer className="site-footer page-width"><span className="footer-brand">Thunder bend</span><span>Учебный проект</span><span>© 2026</span></footer>
     {authMode && <AuthDialog mode={authMode} onModeChange={setAuthMode} onClose={() => setAuthMode(null)} onLogin={onLogin} />}
   </>;
 }

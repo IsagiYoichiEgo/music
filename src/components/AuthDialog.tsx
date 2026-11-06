@@ -25,11 +25,12 @@ export default function AuthDialog({ mode, onModeChange, onClose, onLogin }: Pro
   useEffect(() => {
     const element = dialog.current;
     element?.showModal();
+    element?.querySelector<HTMLInputElement>('input')?.focus();
     return () => element?.close();
   }, []);
 
   function switchMode() {
-    setError(''); setNotice(''); setPassword(''); setConfirmation('');
+    setError(''); setNotice(''); setPassword(''); setConfirmation(''); setShowPassword(false);
     onModeChange(isRegister ? 'login' : 'register');
   }
 
@@ -48,7 +49,7 @@ export default function AuthDialog({ mode, onModeChange, onClose, onLogin }: Pro
       const input = { username: username.trim(), password };
       if (isRegister) {
         await register(input);
-        setPassword(''); setConfirmation('');
+        setPassword(''); setConfirmation(''); setShowPassword(false);
         onModeChange('login');
         setNotice('Аккаунт создан. Теперь войдите.');
       } else {
@@ -69,11 +70,17 @@ export default function AuthDialog({ mode, onModeChange, onClose, onLogin }: Pro
     }
   }
 
-  return <dialog ref={dialog} className="auth-dialog" aria-labelledby="auth-title"
+  return <dialog ref={dialog} className="auth-dialog" aria-labelledby="auth-title" aria-describedby="auth-description"
     onCancel={(event) => { event.preventDefault(); if (!pending) onClose(); }}
-    onClick={(event) => { if (event.target === event.currentTarget && !pending) onClose(); }}>
+    onClick={(event) => {
+      const bounds = event.currentTarget.getBoundingClientRect();
+      if (!pending && event.target === event.currentTarget
+        && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) onClose();
+    }}>
     <button className="dialog-close" type="button" aria-label="Закрыть" disabled={pending} onClick={onClose}>×</button>
+    <p className="dialog-brand">Thunder bend</p>
     <h2 id="auth-title">{isRegister ? 'Регистрация' : 'Вход'}</h2>
+    <p id="auth-description" className="dialog-description">{isRegister ? 'Создайте аккаунт, затем заполните профиль музыканта.' : 'Войдите, чтобы открыть свой профиль.'}</p>
     <form onSubmit={handleSubmit} noValidate>
       <fieldset disabled={pending}>
         <label htmlFor="auth-username">Логин</label>
@@ -83,7 +90,7 @@ export default function AuthDialog({ mode, onModeChange, onClose, onLogin }: Pro
         <div className="password-field">
           <input id="auth-password" name="password" type={showPassword ? 'text' : 'password'} required
             autoComplete={isRegister ? 'new-password' : 'current-password'} value={password}
-            onChange={(event) => setPassword(event.target.value)} placeholder={isRegister ? 'Не менее 6 символов' : 'Введите пароль'} />
+            onChange={(event) => setPassword(event.target.value)} placeholder={isRegister ? 'От 6 символов' : 'Введите пароль'} />
           <button type="button" className="password-toggle" onClick={() => setShowPassword((value) => !value)}
             aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}>{showPassword ? 'Скрыть' : 'Показать'}</button>
         </div>
