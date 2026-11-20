@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
-import { ApiError, getProfile, login, register } from '../api';
+import { ApiError, DEMO_LOGIN, getProfile, isDemo, login, register } from '../backend';
 import type { User } from '../types';
 
 export type AuthMode = 'login' | 'register';
@@ -81,6 +81,10 @@ export default function AuthDialog({ mode, onModeChange, onClose, onLogin }: Pro
     <p className="dialog-brand">Thunder bend</p>
     <h2 id="auth-title">{isRegister ? 'Регистрация' : 'Вход'}</h2>
     <p id="auth-description" className="dialog-description">{isRegister ? 'Создайте аккаунт, затем заполните профиль музыканта.' : 'Войдите, чтобы открыть свой профиль.'}</p>
+    {isDemo() && !isRegister && <div className="demo-hint">
+      <span>Демо-аккаунт: <b>{DEMO_LOGIN.username}</b> / <b>{DEMO_LOGIN.password}</b></span>
+      <button type="button" className="text-button" onClick={() => { setUsername(DEMO_LOGIN.username); setPassword(DEMO_LOGIN.password); }}>Подставить</button>
+    </div>}
     <form onSubmit={handleSubmit} noValidate>
       <fieldset disabled={pending}>
         <label htmlFor="auth-username">Логин</label>

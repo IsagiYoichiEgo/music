@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
-import { ApiError, getSpecializations } from '../api';
+import { ApiError, getSpecializations } from '../backend';
 import type { ProfileInput, Specialization, User } from '../types';
 
 interface Props {

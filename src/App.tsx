@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ApiError, getProfile, logout, updateProfile } from './api';
+import { ApiError, getProfile, isDemo, logout, onDemoChange, updateProfile } from './backend';
 import type { ProfileInput, User } from './types';
 import AuthDialog from './components/AuthDialog';
 import type { AuthMode } from './components/AuthDialog';
@@ -14,6 +14,8 @@ export default function App() {
   const [busy, setBusy] = useState('Проверяем вход…');
   const [notice, setNotice] = useState('');
   const [check, setCheck] = useState(0);
+  const [demo, setDemo] = useState(isDemo());
+  useEffect(() => onDemoChange(setDemo), []);
 
   useEffect(() => {
     let active = true;
@@ -69,6 +71,8 @@ export default function App() {
       </div>
     </header>
     <LoadingBar message={busy} />
+    {demo && <div className="demo-chip page-width" role="status"><span className="demo-dot" aria-hidden="true" />
+      Демо-режим: учебный сервер сейчас недоступен, аккаунты сохраняются в этом браузере.</div>}
     {notice && <div className="site-notice page-width" role="alert"><span>{notice}</span>
       <button className="text-button" type="button" disabled={Boolean(busy)} onClick={() => setCheck((value) => value + 1)}>Проверить вход</button>
       <button className="notice-close" type="button" aria-label="Закрыть уведомление" onClick={() => setNotice('')}>×</button>
@@ -77,7 +81,7 @@ export default function App() {
       {showProfile && user ? <ProfilePage key={user.id} user={user} onSave={saveProfile} onExpired={onExpired} onHome={openHome} />
         : <HomePage signedIn={Boolean(user)} busy={Boolean(busy)} onJoin={() => setAuthMode('register')} onProfile={openProfile} />}
     </div>
-    <footer className="site-footer page-width"><span className="footer-brand">Thunder bend</span><span>Учебный проект</span><span>© 2026</span></footer>
+    <footer className="site-footer page-width"><span className="footer-brand">Thunder bend</span><span>Учебный проект. Группа, альбом и тур вымышлены.</span><span>© 2026</span></footer>
     {authMode && <AuthDialog mode={authMode} onModeChange={setAuthMode} onClose={() => setAuthMode(null)} onLogin={onLogin} />}
   </>;
 }
